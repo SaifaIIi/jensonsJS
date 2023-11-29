@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="./jtpl-logo.jpg" type="image/x-icon" />
+  <title>Batch Report</title>
+  <link rel="stylesheet" href="./pridefine.css" />
+  <link rel="stylesheet" href="./styleMAinPRo.css" />
+
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./pdf.css" />
+
+
+  <!-- <link rel="stylesheet" href="./styleDark.css" /> -->
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
+</head>
+
+<body class="body">
+  <div class="wrapper collapse" id="wrapper">
+    <div class="top_navbar">
+      <div class="hamburger" onmouseover="sliderOpen()" onmouseout="sliderClose()">
+        <div class="one"></div>
+        <div class="two"></div>
+        <div class="three"></div>
+      </div>
+      <div class="top_menu">
+        <div class="logo">Batch Report</div>
+        <ul>
+
+          <li>
+            <a>
+              <!-- <i class="fas fa-bell"></i> -->
+            </a>
+          </li>
+          <li>
+            <a title="Download File">
+              <img onclick="takePdf('export')" height="33" class="cur-p download-icon" src="./download-icon.jpg"
+                alt="download">
+              <!-- <i class="fas fa-user"></i> -->
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar" onmouseover="sliderOpen()" onmouseout="sliderClose()">
+<ul>
+        <li>
+          <a href="/">
+            <span class="icon">B</span>
+            <span class="title">Batch Report</span>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <span class="icon">L</span>
+            <span class="title">Logsheet Report</span>
+          </a>
+        </li>
+     
+      </ul> 
+    </div>
+
+    <div class="main_container">
+      <div class="item">
+        <div class="project_container">
+
+          <div class="input-wrapper">
+            <span class="label important">From Date</span>
+            <input required type="date" placeholder="From Date" title="Enter From Date" id="0" class="input-field"
+              name="dateTimeMin" onchange="onChangeInput(event)">
+          </div>
+
+          <div class="input-wrapper">
+            <span class="label important">From Time</span>
+            <input required type="time" title="Enter From Time" id="1" class="input-field" name="fromTime" step="1"
+              onchange="onChangeInput(event)">
+          </div>
+
+          <div class="input-wrapper">
+            <span class="label important">To Date</span>
+            <input required type="date" placeholder="To Date" title="Enter To Date" id="2" class="input-field"
+              name="dateTimeMax" onchange="onChangeInput(event)">
+          </div>
+
+          <div class="input-wrapper">
+            <span class="label important">To Time</span>
+            <input required type="time" title="Enter To Time" id="3" class="input-field" name="toTime" step="1"
+              onchange="onChangeInput(event)">
+          </div>
+
+
+          <div class="input-wrapper">
+            <span class="label important">Batch No.</span>
+            <select required title="Enter Select Batch No." id="4" class="input-field"   name="Batch" step="1" 
+            onchange="onChangeInput(event,`batch`)" >
+              <option value="-1">Select Batch No.</option>
+              <option value="tow">Tow</option>
+              <option value="theee">Theee</option>
+            </select>
+          </div>
+
+
+
+          <div class=" export-reset-btn ">
+            <!-- <button class="exportBtn cur-p" id="Export" onclick="exportData('view')">View</button> -->
+            <!-- <button class="exportBtn cur-p" id="Export" onclick="fetchMethod('view')">View</button> -->
+            <button class="resetBtn cur-p" id="Export" onclick="reset()">Reset</button>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div>
+        <div id="fullWidthBackground"></div>
+        <div id="model"> </div>
+        <!-- <div class="popUp p red   popUpEntrada"> -->
+        <!-- <div class="error-icon"></div>
+          <div><span>My text example</span></div>
+          <button class="puCancelar b-100">Close</button> -->
+        <!-- <button class="puEnviar ">Send</button> -->
+        <!-- </div> -->
+      </div>
+      <!-- <button onclick="modelOnDemo()">demo model click</button>
+      <button onclick="closeModel()">close model click</button> -->
+
+      <!-- <div id="addEle">add ele</div> -->
+      <!-- <button onclick="graph()" class="demoBtn" id="1pdf" data-color="red" > -->
+
+
+      <!-- <button onclick="convertToImage()">Convert to Image</button> -->
+      <div class="nodataSec-nodataText" id="nodataText" style="display: none">No Data To Display</div>
+      <div id="tableContainerNew" style="display: none; border-radius:1rem; ">
+        <div class="pdf-heading">
+          <div class="head-wrapper">
+            <div class="ch1 border-top border-left d-flx" style="    border-top-left-radius: 0.8rem;"  >
+              <img style="padding: 0rem 0.5rem; width:6rem ;height: 4.5rem;" src="./jtpl-logo.jpg" alt="">
+            </div>
+            <div class="ch2 border-top">
+              <div id="machineName" class="heading-main-container flx-wrp flx-aline-cen flx-jus-cen"
+                style=" font-size: 1rem; font-weight: bold;     width: 30rem;     font-family: 'Montserrat', sans-serif;">
+                <div>Jesons Techno Polymers LLP, Mundra</div>
+                <div>Document Name: Batch Card</div>
+              </div>
+            </div>
+            <div class="ch3 border-top border-right txt-alin-cntr" style="font-size:0.8rem; display: grid;place-content: center; gap: 0.5rem;     border-top-right-radius: 0.8rem;" >
+              <div><span class="fnt-b" >Document Number:</span> JTPL/PRD/04</div>
+              <div><span class="fnt-b" >Revision no.:</span> 1</div>
+              <div><span class="fnt-b" >Effective Date :</span><span  id="effectiveDate" > 01/04/2023</span></div>
+            </div>
+          </div>
+        </div>
+
+        <table
+      style="border-collapse: collapse; width: 100%; "
+      cellspacing="0"
+    >
+      <!-- <tr style="height: 46pt">
+        <td
+          style="
+            width: 576pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+          colspan="6"
+        >
+          <p
+            class="s1"
+            style="
+              padding-top: 5pt;
+              padding-left: 185pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            Jesons<span class="s2"> </span>Techno<span class="s2"> </span
+            >Polymers<span class="s2"> </span>LLP,<span class="s2"> </span
+            >Mundra<span class="s2"> </span><span class="s3">Document</span
+            ><span class="s4"> </span><span class="s3">Number:</span
+            ><span class="s4"> </span><span class="s5">JTPL/PRD/04</span>
+          </p>
+          <p
+            class="s6"
+            style="
+              padding-top: 5pt;
+              padding-left: 209pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            Document<span class="s7"> </span>Name:<span class="s7"> </span
+            >Batch<span class="s7"> </span>Card<span class="s7"> </span
+            ><span class="s8">Revision</span><span class="s9"> </span
+            ><span class="s8">no.:</span><span class="s9"> </span
+            ><span class="s10">1</span>
+          </p>
+          <p
+            class="s11"
+            style="
+              padding-top: 2pt;
+              padding-right: 16pt;
+              text-indent: 0pt;
+              text-align: right;
+            "
+          >
+            Effective<span class="s12"> </span>Date<span class="s12"> </span
+            >:<span class="s12"> </span><span class="s13">01/04/2023</span>
+          </p>
+        </td>
+      </tr> -->
+      
+      <tr style="height: 14pt">
+        <td
+          style="
+            width: 120pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+          rowspan="2"
+        >
+          <p
+            class="s11"
+            style="
+              padding-top: 4pt;
+              padding-left: 30pt;
+              padding-right: 43pt;
+              text-indent: 0pt;
+              text-align: center;
+            "
+          >
+            Raw<span class="s12"> </span>Material
+          </p>
+          <p style="text-indent: 0pt; text-align: left"><br /></p>
+          <p
+            class="s11"
+            style="
+              padding-left: 29pt;
+              padding-right: 43pt;
+              text-indent: 0pt;
+              text-align: center;
+            "
+          >
+            RM Code
+          </p>
+        </td>
+        <td
+          class="s11"
+          style="text-align: center; padding-top:0.8rem"
+          colspan="3"
+        >Quantity(kg)</td>
+        <td
+          class="s11"
+          style="text-align: center; padding-top:1.6rem;     width: 90pt;"
+          rowspan="2"
+        >RM Bx No.</td>
+        <td
+        class="s11"
+
+          style="
+            width: 120pt;
+            text-align: center;
+            padding-top:1.6rem
+          "
+          rowspan="2"
+        >
+
+            Operator Name
+        </td>
+      </tr>
+      <tr style="height: 18pt">
+        <td
+          style="
+            width: 75pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s11"
+            style="
+              padding-top: 6pt;
+              padding-left: 22pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            SP(kg)
+          </p>
+        </td>
+        <td
+          style="
+            width: 76pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s11"
+            style="
+              padding-top: 6pt;
+              padding-left: 26pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            PV(kg)
+          </p>
+        </td>
+        <td
+          style="
+            width: 83pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s11"
+            style="
+              padding-top: 6pt;
+              padding-left: 20pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            Deviation(Kg)
+          </p>
+        </td>
+      </tr>
+
+      <tbody id="JesonsBody" >
+
+      </tbody>
+     
+      <!-- <tr >
+        <td
+        class="s11"
+          style="
+        
+            padding: 0.75rem 0;
+            text-indent: 0pt;
+            text-align: center; "
+          colspan="6"
+        >
+      
+            REACTOR
+        </td>
+      </tr> -->
+       <!-- <tr style="height: 18pt">
+        <td
+        class="s13"
+
+          style="
+            width: 120pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+         
+            HDM
+        </td>
+        <td
+          style="
+            width: 75pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s13"
+            style="
+              padding-top: 5pt;
+              padding-left: 23pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            14900.00
+          </p>
+        </td>
+        <td
+          style="
+            width: 76pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s13"
+            style="
+              padding-top: 6pt;
+              padding-left: 27pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            14900.00
+          </p>
+        </td>
+        <td
+          style="
+            width: 83pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s13"
+            style="
+              padding-top: 5pt;
+              padding-left: 29pt;
+              padding-right: 28pt;
+              text-indent: 0pt;
+              text-align: center;
+            "
+          >
+            0.00
+          </p>
+        </td>
+        <td
+          style="
+            width: 102pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+          >
+          <p style="text-indent: 0pt; text-align: left"><br /></p>
+        </td>
+        <td
+          style="
+            width: 120pt;
+            border-top-style: solid;
+            border-top-width: 1pt;
+            border-left-style: solid;
+            border-left-width: 1pt;
+            border-right-style: solid;
+            border-right-width: 1pt;
+          "
+        >
+          <p
+            class="s13"
+            style="
+              padding-top: 4pt;
+              padding-left: 48pt;
+              text-indent: 0pt;
+              text-align: left;
+            "
+          >
+            SHOAIB
+          </p>
+        </td>
+      </tr>  -->
+
+        <tbody>
+          <tr>
+            <td class="s11" style=" width: 120pt; text-align: center; padding-top:0.8rem"> 
+              Total Weight: 
+              </td>
+              <td class="s13" style=" width: 120pt; text-align: left; padding:  0.8rem 0 0 2.5rem" colspan="5"> 
+                <span id="totalWeight"></span>
+              </td> 
+          </tr>
+          <tr>
+            <td class="s11" style=" width: 120pt; text-align: center; padding-top:0.8rem"> 
+              White Water Qty:
+              </td>
+              <td class="s13" style=" width: 120pt; text-align: left; padding:  0.8rem 0 0 2.5rem" colspan="5"> 
+                <span id="whiteWaterQuantity"></span>
+                </td> 
+          </tr> <tr>
+            <td class="s11" style=" width: 120pt; text-align: center; padding-top:0.8rem"> 
+              Blending Material :
+              </td>
+              <td class="s13" style=" width: 120pt; text-align: left; padding:  0.8rem 0 0 2.5rem" colspan="5"> 
+                <span id="blendingMaterial"></span>
+                </td> 
+          </tr>
+          <tr  >
+            <td class="s11" style=" width: 120pt; text-align: center; padding-top:0.8rem; border-right:none; height: 7rem;" > 
+              Remarks :
+              </td>
+              <td colspan="5" style="border-left: none;" >
+                <span id="remarks"></span>
+              </td>
+          </tr>
+        </tbody>
+         
+     
+     
+    </table>
+
+
+<!-- <button onclick="jeSonsFetch()" >jeSonsTable demo</button> -->
+        <!-- <table class="name-product-table">
+          <tr class="name-row">
+            <td style="border-right:none; color: black;  font-weight: bold; font-family: 'Montserrat', sans-serif;">
+              PRODUCT NAME:
+              <span
+                style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;"
+                id="productName">Autoclave-3</span>
+            </td>
+            <td
+              style="border-right:none;border-left:none;  color: black;  font-weight: bold; font-family: 'Montserrat', sans-serif;">
+              LOT NO :
+              <span
+                style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;"
+                id="lotNo">2</span>
+            </td>
+            <td class="border-none-left"
+              style="border-left:none; color: black;  font-weight: bold; font-family: 'Montserrat', sans-serif;">
+              BATCH NO :
+              <span
+                style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;"
+                id="batchNo">Batch Test</span>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="font-size: 1rem;  font-weight: bold; font-family: 'Montserrat', sans-serif;"
+              class="txt-alin-cntr border-none-top">
+              BATCH DETAILS
+            </td>
+          </tr>
+        </table>
+
+        <div class="txt-alin-cntr d-flx batch-details-tables  table-lable-left     ">
+          <table>
+            <tr>
+              <td class="border-left">Product Name :</td>
+              <td>
+                <span id="productName"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">Autoclave-3</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Batch No :</td>
+              <td>
+                <span id="batchNo"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">Batch
+                  Test
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Lot No:</td>
+              <td>
+                <span id="lotNo"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">2</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Cycle No:</td>
+              <td>
+                <span id="cycleNo"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">10</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Pack Size In ml:</td>
+              <td>
+                <span id="packSizeInMl"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">150</span>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td class="border-left">Time Interval:</td>
+              <td class="border-right">
+                <span id="timeInterval"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">10</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Program No:</td>
+              <td class=" border-right">
+                <span id="programNo"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">1</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Cycle Start Date & Time:</td>
+              <td class="border-right">
+                <span id="cycleStartDateTime"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">03/08/2021
+                  10:22:17</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Cycle End Date & Time:</td>
+              <td class="border-right">
+                <span id="cycleEndDateTime"
+                  style="text-align: center; color: black;  width: 10rem;  display: inline-block; font-weight: bold; border: 2px solid black;">03/08/2021
+                  10:22:17</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left"></td>
+              <td class="border-right"></td>
+            </tr>
+          </table>
+        </div>
+        <table class="width-100">
+          <tr>
+            <td colspan="3" class="txt-alin-cntr"
+              style="font-size: 1rem;  font-weight: bold; font-family: 'Montserrat', sans-serif;">
+              PARAMETERS
+            </td>
+          </tr>
+        </table>
+        <div class="txt-alin-cntr d-flx PARAMETERS-details-tables table-lable-left      ">
+          <table>
+            <tr>
+              <td class="border-left">Cooling Temperature :</td>
+              <td>
+                <span id="coolingTemperature"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(°C)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Overheating :</td>
+              <td>
+                <span id="overheating"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(°C)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Sterilization Temperature :</td>
+              <td>
+                <span id="sterilizationTemperature"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(°C)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">+ Temp Limit :</td>
+              <td>
+                <span id="plusTempLimit"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(°C)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">- Temp Limit :</td>
+              <td>
+                <span id="minusTempLimit"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(°C)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left border-bottom">Sterilization Time :</td>
+              <td class="border-bottom">
+                <span id="sterilizationTime"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span><span>
+                  (min)</span>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td class="border-left">
+                Chamber Pressure Limit During Heating :
+              </td>
+              <td class="border-right">
+                <span id="chamberPressureLimitDuringHeating"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">
+                Chamber Pressure Sterilization Temp :
+              </td>
+              <td class="border-right">
+                <span id="chamberPressureSterilizationTemp"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">
+                Chamber Pressure at Start Cooling :
+              </td>
+              <td class="border-right">
+                <span id="chamberPressureAtStartCooling"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">
+                Chamber Pressure at End of Cooling :
+              </td>
+              <td class="border-right">
+                <span id="chamberPressureAtEndOfCooling"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left">Chamber Pressure After Drain :</td>
+              <td class="border-right">
+                <span id="chamberPressureAfterDrain"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-left border-bottom">Purified Water Level :</td>
+              <td class="border-right border-bottom">
+                <span id="purifiedWaterLevel"
+                  style="text-align: center; color: black;  width: 6rem;  display: inline-block; font-weight: bold; border: 2px solid black;"></span>
+                <span>(BAR)</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="height-5rem"></div>
+        <table class="width-100">
+          <tr>
+            <td colspan="3" style="font-size: 1rem;  font-weight: bold; font-family: 'Montserrat', sans-serif;"
+              class="txt-alin-cntr  border-none-bottom">
+              PROCESS VALUE
+            </td>
+          </tr>
+        </table> -->
+
+        <div id="tableContainer"></div>
+
+
+      </div>
+
+      <!-- <span id="pdf" onclick="takePdf()">Export -->
+      <!-- <p><div id="red">print this to pdf</div></p> -->
+      <!-- <canvas id="graphCanvas" width="400" height="300"></canvas> -->
+      <!-- <img id="graphImage" alt="Graph Image" style="display: none"><img src="./tabLogo.png" alt="logo"> -->
+
+
+      <!-- </span> -->
+
+    </div>
+
+
+  </div>
+</body>
+<script src="./index.js"></script>
+<script src="./xlxs.js"></script>
+
+
+</html>
