@@ -490,6 +490,8 @@ let pdfDataBox = {
   // chamberPressureAfterDrain: 0.0,
   // purifiedWaterLevel: 74.0,
 };
+let jesonTableDataOldLength = 0;
+let hitContinu = false;
 let dataKey = [];
 let dataRequire = {};
 let extra = [];
@@ -533,9 +535,13 @@ let dataCopy = { ...data };
 console.log(data, "data");
 
 const onchangDDL = () => {
+  jesonTableDataOldLength = 0;
   const ddlData = document.getElementById("4");
   if (ddlData.value == "-1") {
     ddlData.style.color = "gray";
+    document.getElementById(tableIdName).style.display = "none";
+    document.getElementById("nodataText").style.display = "none";
+    hitContinu = false;
   }
   console.log(ddlData, "value");
 };
@@ -545,7 +551,6 @@ const onChangeInput = (e, num) => {
   // checkNumber(e.target.value);
   console.log(e.target.value, "onchange");
   document.getElementById("nodataText").style.display = "none";
-
 
   let id = e.target.id;
 
@@ -573,6 +578,7 @@ const onChangeInput = (e, num) => {
       );
     }
   } else if (e.target.type == "date") {
+    hitContinu = false;
     if (data.dateTimeMin || data.dateTimeMax) {
       data = { ...data, [e.target.name]: e.target.value };
 
@@ -616,15 +622,20 @@ const onChangeInput = (e, num) => {
   }
 
   if (num == "batch") {
+    jesonTableDataOldLength = 0;
     const ddlElement = document.getElementById("4");
     if (e.target.value !== "-1") {
       ddlElement.style.color = "#101111";
       jeSonsFetch();
     } else {
       ddlElement.style.color = "gray";
+      document.getElementById(tableIdName).style.display = "none";
+      document.getElementById("nodataText").style.display = "none";
+      hitContinu = false;
     }
   } else {
     document.getElementById(tableIdName).style.display = "none";
+    hitContinu = false;
   }
 
   console.log(e.target.name, data, dataKey, extra, "change", dataRequire);
@@ -922,6 +933,7 @@ const exportData = (btn) => {
 };
 
 const reset = () => {
+  hitContinu = false;
   isModel = false;
   data = { ...dataCopy };
   dataKey.map((ele, i) => {
@@ -1066,15 +1078,15 @@ const downloadFile = () => {
   takePdf();
 };
 const takePdf = () => {
-  var element = document.getElementById(tableIdName);
+  let element = document.getElementById(tableIdName);
 
   // Get the inner HTML of the element
-  var html = element.innerHTML;
+  let html = element.innerHTML;
 
   console.log(html);
   console.log(document.getElementById("pdf"), "pdf");
-  // var divContents = document.getElementById("pdf");
-  var printWindow = window.open("", "", "height=400,width=800");
+  // let divContents = document.getElementById("pdf");
+  let printWindow = window.open("", "", "height=400,width=800");
   printWindow.document.write("<html>  <head><title>Report</title>");
   printWindow.document.write(
     ` ${cssStringToExportData}
@@ -1129,25 +1141,25 @@ const exportTableToExcel = (id, fileName = "Report", sheetName = "Report") => {
 };
 
 // const graph=()=>{
-//   var canvas = document.getElementById("graphCanvas");
-//   var context = canvas.getContext("2d");
+//   let canvas = document.getElementById("graphCanvas");
+//   let context = canvas.getContext("2d");
 
 //   // Define the data for the graph (sample data)
-//   var data = [20, 50, 30, 70, 45, 60];
+//   let data = [20, 50, 30, 70, 45, 60];
 
 //   // Define the width and height of the graph
-//   var graphWidth = canvas.width - 40;
-//   var graphHeight = canvas.height - 40;
+//   let graphWidth = canvas.width - 40;
+//   let graphHeight = canvas.height - 40;
 
 //   // Calculate the width of each bar
-//   var barWidth = graphWidth / data.length;
+//   let barWidth = graphWidth / data.length;
 
 //   // Calculate the maximum value in the data array
-//   var maxValue = Math.max.apply(null, data);
+//   let maxValue = Math.max.apply(null, data);
 
 //   // Draw the bars
-//   for (var i = 0; i < data.length; i++) {
-//       var barHeight = (data[i] / maxValue) * graphHeight;
+//   for (let i = 0; i < data.length; i++) {
+//       let barHeight = (data[i] / maxValue) * graphHeight;
 
 //       // Set the fill color
 //       context.fillStyle = "#007bff";
@@ -1166,11 +1178,11 @@ const exportTableToExcel = (id, fileName = "Report", sheetName = "Report") => {
 // }
 const graph = () => {
   // Get the canvas element
-  var canvas = document.getElementById("graphCanvas");
-  var context = canvas.getContext("2d");
+  let canvas = document.getElementById("graphCanvas");
+  let context = canvas.getContext("2d");
 
   // Define the data for the graph (sample data)
-  var data = [
+  let data = [
     { x: 0, y: 20 },
     { x: 1, y: 50 },
     { x: 2, y: 30 },
@@ -1180,11 +1192,11 @@ const graph = () => {
   ];
 
   // Define the width and height of the graph
-  var graphWidth = canvas.width - 40;
-  var graphHeight = canvas.height - 40;
+  let graphWidth = canvas.width - 40;
+  let graphHeight = canvas.height - 40;
 
   // Calculate the maximum value in the data array
-  var maxValue = Math.max.apply(
+  let maxValue = Math.max.apply(
     null,
     data.map(function (point) {
       return point.y;
@@ -1192,8 +1204,8 @@ const graph = () => {
   );
 
   // Calculate the x and y scaling factors
-  var xScale = graphWidth / (data.length - 1);
-  var yScale = graphHeight / maxValue;
+  let xScale = graphWidth / (data.length - 1);
+  let yScale = graphHeight / maxValue;
 
   // Draw the axes
   context.beginPath();
@@ -1207,8 +1219,8 @@ const graph = () => {
   // Draw the data points and lines
   context.beginPath();
   context.moveTo(20, canvas.height - 20 - data[0].y * yScale);
-  for (var i = 1; i < data.length; i++) {
-    var point = data[i];
+  for (let i = 1; i < data.length; i++) {
+    let point = data[i];
     context.lineTo(
       20 + point.x * xScale,
       canvas.height - 20 - point.y * yScale
@@ -1219,26 +1231,26 @@ const graph = () => {
   context.stroke();
 
   // Draw the y-axis labels
-  var yLabelsCount = 5;
-  var yLabelStep = Math.ceil(maxValue / yLabelsCount);
-  for (var i = 0; i <= yLabelsCount; i++) {
-    var yLabel = (i * yLabelStep).toString();
-    var yPosition = canvas.height - 20 - i * yLabelStep * yScale;
+  let yLabelsCount = 5;
+  let yLabelStep = Math.ceil(maxValue / yLabelsCount);
+  for (let i = 0; i <= yLabelsCount; i++) {
+    let yLabel = (i * yLabelStep).toString();
+    let yPosition = canvas.height - 20 - i * yLabelStep * yScale;
     context.fillStyle = "#000";
     context.fillText(yLabel, 5, yPosition);
   }
   // Draw the x-axis labels
-  for (var i = 0; i < data.length; i++) {
-    var point = data[i];
-    var xLabel = "Label " + point.x.toString(); // Custom x-axis label
+  for (let i = 0; i < data.length; i++) {
+    let point = data[i];
+    let xLabel = "Label " + point.x.toString(); // Custom x-axis label
     context.fillStyle = "#000";
     context.fillText(xLabel, 20 + point.x * xScale, canvas.height - 5);
   }
 };
 
 function convertToImage() {
-  var canvas = document.getElementById("graphCanvas");
-  var image = document.getElementById("graphImage");
+  let canvas = document.getElementById("graphCanvas");
+  let image = document.getElementById("graphImage");
   image.src = canvas.toDataURL("image/png");
   image.style.display = "block";
   takePdf();
@@ -1249,7 +1261,7 @@ const createTable = (data) => {
   console.log(data, "in create table");
   document.getElementById("tableContainer").innerHTML = "";
   // Array of objects
-  // var data1 = [
+  // let data1 = [
   //   { name: "John", age: 25, city: "New York" },
   //   { name: "Jane", age: 30, city: "London" },
   //   { name: "Bob", age: 35, city: "Paris" },
@@ -1258,14 +1270,14 @@ const createTable = (data) => {
   // data=data1
 
   // Create table element
-  var table = document.createElement("table");
+  let table = document.createElement("table");
   table.style.width = "100%";
 
   // Create table header row
-  var thead = document.createElement("thead");
-  var headerRow = document.createElement("tr");
-  for (var key in data[0]) {
-    var headerCell = document.createElement("th");
+  let thead = document.createElement("thead");
+  let headerRow = document.createElement("tr");
+  for (let key in data[0]) {
+    let headerCell = document.createElement("th");
     headerCell.style.fontSize = "0.8rem";
     headerCell.style.fontWeight = "bold";
 
@@ -1283,11 +1295,11 @@ const createTable = (data) => {
   table.appendChild(thead);
 
   // Create table body rows
-  var tbody = document.createElement("tbody");
-  for (var i = 0; i < data.length; i++) {
-    var row = document.createElement("tr");
-    for (var key in data[i]) {
-      var cell = document.createElement("td");
+  let tbody = document.createElement("tbody");
+  for (let i = 0; i < data.length; i++) {
+    let row = document.createElement("tr");
+    for (let key in data[i]) {
+      let cell = document.createElement("td");
       cell.style.fontSize = "0.8rem";
       cell.style.textAlign = "center";
 
@@ -1302,11 +1314,16 @@ const createTable = (data) => {
   table.appendChild(tbody);
 
   // Add the table to the container element
-  var tableContainer = document.getElementById("tableContainer");
+  let tableContainer = document.getElementById("tableContainer");
   tableContainer.appendChild(table);
 };
 
 const getDDL = () => {
+  jesonTableDataOldLength = 0;
+  document.getElementById(tableIdName).style.display = "none";
+  document.getElementById("nodataText").style.display = "none";
+  hitContinu = false;
+
   document.getElementsByName("Batch")[0].value = "-1";
   document.getElementsByName("Batch")[0].style.color = "gray";
 
@@ -1324,7 +1341,7 @@ const getDDL = () => {
   const { dateTimeMax, dateTimeMin } = data;
 
   fetch(
-    `http://localhost:8080/report/dropdown?from=${dateTimeMin}&to=${dateTimeMax}`,
+    `http://localhost:8080/report/et-dropdown?from=${dateTimeMin}&to=${dateTimeMax}`,
     {
       method: "GET",
       // body: JSON.stringify(fetechBody),
@@ -1335,8 +1352,8 @@ const getDDL = () => {
       return data.json();
     })
     .then((data) => {
-      console.log(data.batchNos);
-      data.batchNos.map((e) => {
+      console.log(data.etBatches);
+      data.etBatches.map((e) => {
         let option = document.createElement("option");
         option.value = e.value;
         option.textContent = e.displayText;
@@ -1346,11 +1363,13 @@ const getDDL = () => {
     .catch();
 };
 getDDL();
-
 const jeSonsFetch = () => {
   // jeSonsTable("data.dataTable");
+  hitContinu = true;
 
-  fetch(`http://localhost:8080/report?batchNo=${data.Batch}`, {
+  console.log("jeSonsFetch calssssss");
+
+  fetch(`http://localhost:8080/report/et-log?batchNo=${data.Batch}`, {
     method: "GET",
     // body: JSON.stringify(fetechBody),
     headers: { "Content-Type": "application/json" },
@@ -1360,17 +1379,22 @@ const jeSonsFetch = () => {
     })
     .then((data) => {
       console.log(data);
-      document.getElementById("effectiveDate").innerHTML=data.effectiveDate ? data.effectiveDate  : "--"
-      document.getElementById("totalWeight").innerHTML=data.totalWeight ? data.totalWeight  : "--"
-      document.getElementById("whiteWaterQuantity").innerHTML=data.whiteWaterQuantity ? data.whiteWaterQuantity  : "--"
-      document.getElementById("blendingMaterial").innerHTML=data.blendingMaterial ? data.blendingMaterial  : "--"
-      document.getElementById("remarks").innerHTML=data.remarks ? data.remarks  : ""
-      jeSonsTable(data.dataTable);
+      // document.getElementById("effectiveDate")?.innerHTML=data.effectiveDate ? data.effectiveDate  : "--"
+      // document.getElementById("totalWeight")?.innerHTML=data.totalWeight ? data.totalWeight  : "--"
+      // document.getElementById("whiteWaterQuantity")?.innerHTML=data.whiteWaterQuantity ? data.whiteWaterQuantity  : "--"
+      // document.getElementById("blendingMaterial")?.innerHTML=data.blendingMaterial ? data.blendingMaterial  : "--"
+      // document.getElementById("remarks")?.innerHTML=data.remarks ? data.remarks  : ""
+      jeSonsTable(data.data);
+      jesonTableDataOldLength = data.data?.length;
     })
     .catch(() => {
       document.getElementById("nodataText").style.display = "block";
     });
 };
+
+setInterval(() => {
+  hitContinu && jeSonsFetch();
+}, 4000);
 
 const jeSonsTable = (data) => {
   document.getElementById("nodataText").style.display = "none";
@@ -1423,48 +1447,205 @@ const jeSonsTable = (data) => {
   //   QC: [],
   //   "POST ADDITION": [],
   // };
+  // data = [
+  //   {
+  //     "DATE TIME": "2023-11-30 00:00:00",
+  //     ACTIVITY: 5,
+  //     "ET WEIGHT (KG)": 5,
+  //     "DT WEIGHT (KG)": 5,
+  //     "AGT RPM (ET)": 5,
+  //     "OPERATOR NAME": 5,
+  //   },
+  //   {
+  //     "DATE TIME": "2023-11-30 00:00:00",
+  //     ACTIVITY: 5,
+  //     "ET WEIGHT (KG)": 5,
+  //     "DT WEIGHT (KG)": 5,
+  //     "AGT RPM (ET)": 5,
+  //     "OPERATOR NAME": 5,
+  //   },
+  // ];
 
-  var tbody = document.getElementById("JesonsBody");
-  tbody.innerHTML = "";
+  let dataRT = [
+    {
+      "DATE TIME": "2023-11-30 00:00:00",
+      ACTIVITY: 5,
+      "RT TEMP (◦C)": "15 ◦C",
+      "RPM RT": 1500,
+      "RPM ET": 1200,
+      "ET SET (Kg/hr)": 5,
+      "ET ACTUAL (Kg/hr)": 5,
+      "CT SET (Kg/hr)": 5,
+      "CT ACTUAL (Kg/hr)": 5,
+      "ET WT (Kg)": 5,
+      "RT WT (Kg)": 5,
+      "OPERATOR NAME": 5,
+    },
+    {
+      "DATE TIME": "2023-11-30 00:00:00",
+      ACTIVITY: 5,
+      "RT TEMP (◦C)": "15 ◦C",
+      "RPM RT": 1500,
+      "RPM ET": 1200,
+      "ET SET (Kg/hr)": 5,
+      "ET ACTUAL (Kg/hr)": 5,
+      "CT SET (Kg/hr)": 5,
+      "CT ACTUAL (Kg/hr)": 5,
+      "ET WT (Kg)": 5,
+      "RT WT (Kg)": 5,
+      "OPERATOR NAME": 5,
+    },
+    {
+      "DATE TIME": "2023-11-30 00:00:00",
+      ACTIVITY: 5,
+      "RT TEMP (◦C)": "15 ◦C",
+      "RPM RT": 1500,
+      "RPM ET": 1200,
+      "ET SET (Kg/hr)": 5,
+      "ET ACTUAL (Kg/hr)": 5,
+      "CT SET (Kg/hr)": 5,
+      "CT ACTUAL (Kg/hr)": 5,
+      "ET WT (Kg)": 5,
+      "RT WT (Kg)": 5,
+      "OPERATOR NAME": 5,
+    },
+  ];
 
-  for (const key in data) {
-    if (
-      data[key] &&
-      key !== "totalWeight" &&
-      key !== "whiteWaterQuantity" &&
-      key !== "blendingMaterial" &&
-      key !== "remarks"
-    ) {
-      var headerRow = document.createElement("tr");
-      var headerCell = document.createElement("td");
+  if (jesonTableDataOldLength != data.length) {
+    let tbody = document.getElementById("JesonsBody");
+    let tbodyRT = document.getElementById("JesonsBodyRT");
+
+    tbody.innerHTML = "";
+
+    if (tbodyRT) {
+      tbodyRT.innerHTML = "";
+      let headerRowRT = document.createElement("tr");
+      let headerRowRTmAIN = document.createElement("tr");
+
+      const headerNamesRT = Object.keys(dataRT.length ? dataRT[0] : {});
+      const headerNamesRTMain = [
+        "DATE TIME",
+        "ACTIVITY",
+        "RT TEMP (◦C)",
+        "RT",
+        "ET",
+        "SET (Kg/hr)",
+        "ACTUAL (Kg/hr)",
+        "SET (Kg/hr)",
+        "ACTUAL (Kg/hr)",
+        "ET WT (Kg)",
+        "RT WT (Kg)",
+        "OPERATOR NAME",
+      ];
+      const headerNamesRTMainUp = [
+        "",
+        "",
+        "",
+        "RPM",
+        "ET FEED RATE",
+        "CT FEED RATE",
+        "--",
+        "--",
+        "--",
+        "--",
+      ];
+
+      for (let ii = 0; ii < headerNamesRTMainUp.length; ii++) {
+        const element = headerNamesRTMainUp[ii];
+        let headerCell = document.createElement("td");
+        headerCell.style.textAlign = "center";
+        headerCell.style.backgroundColor = "#f8f9fa";
+
+        // headerCell.colSpan = 6;
+        headerCell.className = "s11";
+        headerCell.style.padding = "0.75rem 0";
+        headerCell.textContent = element?.toUpperCase();
+        headerRowRTmAIN.appendChild(headerCell);
+      }
+      tbodyRT.appendChild(headerRowRTmAIN);
+
+      for (let ii = 0; ii < headerNamesRTMain.length; ii++) {
+        const element = headerNamesRTMain[ii];
+        let headerCell = document.createElement("td");
+        headerCell.style.textAlign = "center";
+        headerCell.style.backgroundColor = "#f8f9fa";
+
+        // if (element == "DATE TIME") {
+        //   headerCell.rowSpan = "2";
+        // }
+
+        // headerCell.colSpan = 6;
+        headerCell.className = "s11";
+        headerCell.style.padding = "0.75rem 0";
+        headerCell.textContent = element?.toUpperCase();
+        headerRowRT.appendChild(headerCell);
+      }
+      tbodyRT.appendChild(headerRowRT);
+
+      dataRT.map((e) => {
+        let row = document.createElement("tr");
+        row.style.borderTop = "1px solid #dee2e6";
+        row.style.borderBottom = "1px solid #dee2e6";
+
+        headerNamesRT.map((el) => {
+          let cell = document.createElement("td");
+          cell.className = "s11";
+          cell.style.textAlign = "center";
+          cell.style.padding = "0.75rem 0";
+          cell.style.color = "#6c757d";
+          // cell.style.border = "1px solid rgb(242 242 242)";
+
+          cell.textContent = e[el] ? e[el] : "---";
+          row.appendChild(cell);
+        });
+        tbodyRT.appendChild(row);
+      });
+    }
+
+    const headerNames = [
+      "DATE TIME",
+      "ACTIVITY",
+      "ET WEIGHT (KG)",
+      "DT WEIGHT (KG)",
+      "AGT RPM (ET)",
+      "OPERATOR NAME",
+    ];
+
+    let headerRow = document.createElement("tr");
+
+    for (let ii = 0; ii < headerNames.length; ii++) {
+      const element = headerNames[ii];
+      let headerCell = document.createElement("td");
       headerCell.style.textAlign = "center";
-      headerCell.colSpan = 6;
+      headerCell.style.backgroundColor = "#f8f9fa";
+
+      // headerCell.colSpan = 6;
       headerCell.className = "s11";
       headerCell.style.padding = "0.75rem 0";
-      headerCell.textContent = key.toUpperCase();
-
+      headerCell.textContent = element?.toUpperCase();
       headerRow.appendChild(headerCell);
-      tbody.appendChild(headerRow);
-      let innerData = data[key] ? data[key] : [];
-      for (let i = 0; i < innerData.length; i++) {
-        const element = innerData[i];
-        const headerRowInner = document.createElement("tr");
-
-        for (const key in element) {
-          const e = element[key];
-          var headerCellInner = document.createElement("td");
-          headerCellInner.style.textAlign = "center";
-          headerCellInner.className = "s13";
-          headerCellInner.style.padding = "0.75rem 0";
-          console.log(e ? e.toString().toUpperCase() : "", "eeeeeeee");
-
-          headerCellInner.textContent = e?.toString().toUpperCase();
-          headerRowInner.appendChild(headerCellInner);
-        }
-
-        tbody.appendChild(headerRowInner);
-      }
     }
+
+    tbody.appendChild(headerRow);
+
+    data.map((e) => {
+      let row = document.createElement("tr");
+      row.style.borderTop = "1px solid #dee2e6";
+      row.style.borderBottom = "1px solid #dee2e6";
+
+      headerNames.map((el) => {
+        let cell = document.createElement("td");
+        cell.className = "s11";
+        cell.style.textAlign = "center";
+        cell.style.padding = "0.75rem 0";
+        cell.style.color = "#6c757d";
+        // cell.style.border = "1px solid rgb(242 242 242)";
+
+        cell.textContent = e[el] ? e[el] : "---";
+        row.appendChild(cell);
+      });
+      tbody.appendChild(row);
+    });
   }
 };
 
